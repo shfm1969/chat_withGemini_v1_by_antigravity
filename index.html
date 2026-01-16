@@ -120,7 +120,8 @@
                         class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                 </span>
-                <span class="text-sm font-medium text-emerald-400">Gemini 3 Flash</span>
+                <span class="text-sm font-medium text-emerald-400">{{ availableModels.find(m => m.value ===
+                    selectedModel)?.label || selectedModel }}</span>
             </div>
         </header>
 
@@ -165,18 +166,40 @@
 
             <!-- Input Area -->
             <div class="p-4 border-t border-white/10 bg-white/5">
-                <form @submit.prevent="sendMessage" class="flex gap-3">
-                    <input v-model="userInput" type="text" placeholder="Type your message here..."
-                        class="flex-grow bg-white/10 border border-white/10 rounded-xl px-5 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                        :disabled="isLoading">
-                    <button type="submit" :disabled="isLoading || !userInput.trim()"
-                        class="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-all shadow-lg hover:shadow-indigo-500/20 active:scale-95 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
-                    </button>
+                <form @submit.prevent="sendMessage" class="flex flex-col gap-4">
+                    <div class="flex gap-3">
+                        <input v-model="userInput" type="text" placeholder="Type your message here..."
+                            class="flex-grow bg-white/10 border border-white/10 rounded-xl px-5 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                            :disabled="isLoading">
+                        <select v-model="selectedModel" :disabled="isLoading"
+                            class="bg-white/10 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm appearance-none cursor-pointer hover:bg-white/20">
+                            <option v-for="model in availableModels" :key="model.value" :value="model.value"
+                                class="bg-[#16213e]">
+                                {{ model.label }}
+                            </option>
+                        </select>
+                        <button type="submit" :disabled="isLoading || !userInput.trim()"
+                            class="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-all shadow-lg hover:shadow-indigo-500/20 active:scale-95 flex items-center justify-center min-w-[3rem]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- API Key Input -->
+                    <div class="relative group">
+                        <input v-model="apiKeyInput" type="password" placeholder="Enter your Gemini API Key..."
+                            class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-2 text-xs text-white/60 placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 transition-all focus:bg-white/10"
+                            :disabled="isLoading">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.4 w-3.4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                            </svg>
+                        </div>
+                    </div>
                 </form>
             </div>
         </main>
@@ -192,8 +215,18 @@
         createApp({
             setup() {
                 // --- CONFIGURATION ---
-                const API_KEY = 'AIzaSyB7Uvd8JCILN3yVw6wIIHlJ-iwCOfJVBEM'; // 請在此處填入您的 API 金鑰
-                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
+                const DEFAULT_API_KEY = ''; // 預設留空，由使用者輸入
+                const apiKeyInput = ref(DEFAULT_API_KEY);
+
+                const availableModels = [
+                    { label: 'Gemini 3 Flash (Preview)', value: 'gemini-3-flash-preview' },
+                    { label: 'Gemini 2.5 Flash', value: 'gemini-2.5-flash' },
+                    { label: 'Gemini 2.5 Pro', value: 'gemini-2.5-pro' },
+                ];
+
+                const selectedModel = ref('gemini-3-flash-preview');
+
+                const getApiUrl = (model, key) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
 
                 const userInput = ref('');
                 const isLoading = ref(false);
@@ -210,6 +243,15 @@
                 const sendMessage = async () => {
                     if (!userInput.value.trim() || isLoading.value) return;
 
+                    if (!apiKeyInput.value.trim()) {
+                        messages.value.push({
+                            role: 'assistant',
+                            content: '請先在下方輸入您的 Gemini API Key 才能開始聊天。'
+                        });
+                        await scrollToBottom();
+                        return;
+                    }
+
                     const userMessage = userInput.value.trim();
                     messages.value.push({ role: 'user', content: userMessage });
                     userInput.value = '';
@@ -217,7 +259,7 @@
                     await scrollToBottom();
 
                     try {
-                        const response = await fetch(API_URL, {
+                        const response = await fetch(getApiUrl(selectedModel.value, apiKeyInput.value), {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -260,7 +302,10 @@
                     isLoading,
                     messages,
                     sendMessage,
-                    chatBox
+                    chatBox,
+                    selectedModel,
+                    availableModels,
+                    apiKeyInput
                 };
             }
         }).mount('#app');
