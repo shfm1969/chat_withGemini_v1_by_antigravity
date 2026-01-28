@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with AI - Gemini 2.0 Flash</title>
+    <title>與 AI 聊天 - Gemini 2.0 Flash</title>
     <!-- Vue 3 CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Tailwind CSS CDN -->
@@ -112,7 +112,7 @@
                             d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
-                <h1 class="text-2xl font-bold tracking-tight text-white font-['Outfit']">Chat with AI</h1>
+                <h1 class="text-2xl font-bold tracking-tight text-white font-['Outfit']">與 AI 聊天</h1>
             </div>
             <div class="flex items-center space-x-2">
                 <span class="flex h-3 w-3 relative">
@@ -138,8 +138,8 @@
                                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                         </svg>
                     </div>
-                    <h2 class="text-xl font-semibold">Ready to spark some ideas?</h2>
-                    <p class="max-w-xs text-sm">Start a conversation with Gemini, your AI creative partner.</p>
+                    <h2 class="text-xl font-semibold">準備好激發一些想法了嗎？</h2>
+                    <p class="max-w-xs text-sm">與您的 AI 創意夥伴 Gemini 開始對話。</p>
                 </div>
 
                 <!-- Messages -->
@@ -168,7 +168,7 @@
             <div class="p-4 border-t border-white/10 bg-white/5">
                 <form @submit.prevent="sendMessage" class="flex flex-col gap-4">
                     <div class="flex gap-3">
-                        <input v-model="userInput" type="text" placeholder="Type your message here..."
+                        <input v-model="userInput" type="text" placeholder="請在此輸入您的訊息..."
                             class="flex-grow bg-white/10 border border-white/10 rounded-xl px-5 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                             :disabled="isLoading">
                         <select v-model="selectedModel" :disabled="isLoading"
@@ -189,7 +189,7 @@
                     </div>
                     <!-- API Key Input -->
                     <div class="relative group">
-                        <input v-model="apiKeyInput" type="password" placeholder="Enter your Gemini API Key..."
+                        <input v-model="apiKeyInput" type="password" placeholder="請輸入您的 Gemini API Key..."
                             class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-2 text-xs text-white/60 placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 transition-all focus:bg-white/10"
                             :disabled="isLoading">
                         <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-20">
@@ -205,7 +205,7 @@
         </main>
 
         <footer class="text-center text-xs text-white/40 font-medium">
-            Powered by Gemini 2.0 Flash • Built with Vue 3 & Tailwind CSS
+            由 Gemini 2.0 Flash 驅動 • 使用 Vue 3 和 Tailwind CSS 構建
         </footer>
     </div>
 

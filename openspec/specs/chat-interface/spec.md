@@ -23,22 +23,22 @@ Gemini API 調用時使用的 API Key MUST 從 UI 輸入欄位動態獲取。
 ### Requirement: Default Model
 該應用程式 SHALL 在初始加載時默認使用 `gemini-3-flash-preview` 模型。
 
-#### Scenario: Default model selection
-- **WHEN** the application is first loaded
-- **THEN** the model selection dropdown defaults to "Gemini 3 Flash (Preview)"
+#### Scenario: 預設模型選擇
+- **WHEN** 應用程式首次加載時
+- **THEN** 模型選擇下拉選單預設為 "Gemini 3 Flash (Preview)"
 
 ### Requirement: Model Selection
 使用者 SHALL 能夠從 UI 的下拉選單中選擇 Gemini 模型。
 
-#### Scenario: User selects a different model
-- **WHEN** user selects a model from the dropdown (e.g., "Gemini 1.5 Pro")
-- **THEN** future messages sent SHALL use the selected model endpoint
-- **AND** the selection MUST be limited to Gemini series models
+#### Scenario: 使用者選擇不同的模型
+- **WHEN** 使用者從下拉選單中選擇一個模型 (例如 "Gemini 2.5 Pro")
+- **THEN** 之後發送的所有訊息 SHALL 使用選定模型的端點
+- **AND** 選擇 MUST 僅限於 Gemini 系列模型
 
 ### Requirement: API Key Input
 使用者 SHALL 能夠在 UI 上輸入 Gemini API Key。
 
-#### Scenario: User provides an API Key
+#### Scenario: 使用者提供 API 金鑰
 - **WHEN** 使用者在 API Key 輸入欄位填入金鑰
 - **THEN** 之後發送的所有 API 請求 MUST 使用該金鑰進行驗證
 - **AND** 輸入欄位 MUST 隱藏金鑰內容 (使用 password 類型)
